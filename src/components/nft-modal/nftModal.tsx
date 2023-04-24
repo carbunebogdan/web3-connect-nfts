@@ -1,18 +1,19 @@
 import Image from 'next/image';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
 export function NftModal({ nftData, viewMetaData }) {
-    const MODAL_ID = 'nftMetaDataModal';
+    const modal = useRef<HTMLDialogElement>(null);
     useEffect(() => {
-        const modal: HTMLDialogElement = document.getElementById(MODAL_ID) as HTMLDialogElement;
-        if (nftData) {
-            !modal.open && modal.showModal();
-        } else {
-            modal.close();
+        if (modal.current) {
+            if (nftData) {
+                !modal.current.open && modal.current.showModal();
+            } else {
+                modal.current.close();
+            }
         }
     }, [nftData])
     return (
-        <dialog id={MODAL_ID} className='flex flex-col rounded-lg bg-white w-[560px] max-h-[80vh] px-8 py-6 gap-6'>
+        <dialog ref={modal} className='flex flex-col rounded-lg bg-white w-[560px] max-h-[80vh] px-8 py-6 gap-6'>
             {nftData ? (<>
                 <div className='flex justify-between items-center'>
                     <h2 className='font-bold text-2xl truncate mb-5'>{`MegaKong #${nftData.tokenId}`}</h2>
@@ -24,14 +25,14 @@ export function NftModal({ nftData, viewMetaData }) {
                     <Image className='rounded-lg' src={nftData.metadata?.image.replace('ipfs://', 'https://ipfs.io/ipfs/')} alt='NFT image' height={496} width={496}></Image>
                     <div className='p-5 flex flex-wrap gap-2'>
                         {nftData.metadata?.attributes ?
-                        nftData.metadata.attributes.map((attribute, index)=>(
-                            <div className='border border-[#D0D5DD] rounded-lg py-3 text-center basis-1/4 grow shrink' key={index}>
-                                <p className='text-[#101828]'>{attribute.trait_type}</p>
-                                <p className='font-semibold text-[#6941C6]'>{attribute.value ? attribute.value : 'N/A'}</p>
-                            </div>
-                        ))
-                        : (<span className='font-semibold'>This NFT does not have any attributes :/</span>)
-                    }
+                            nftData.metadata.attributes.map((attribute, index) => (
+                                <div className='border border-[#D0D5DD] rounded-lg py-3 text-center basis-1/4 grow shrink' key={index}>
+                                    <p className='text-[#101828]'>{attribute.trait_type}</p>
+                                    <p className='font-semibold text-[#6941C6]'>{attribute.value ? attribute.value : 'N/A'}</p>
+                                </div>
+                            ))
+                            : (<span className='font-semibold'>This NFT does not have any attributes :/</span>)
+                        }
                     </div>
                 </div>
             </>) : (<>
