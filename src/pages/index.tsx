@@ -6,6 +6,7 @@ import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { useAccount, useNetwork, useSignMessage } from 'wagmi';
 import { useAuthRequestChallengeEvm } from '@moralisweb3/next';
+import { EvmAddressish, EvmChainish } from 'moralis/common-evm-utils';
 
 const Connect: NextPage = () => {
   const { address } = useAccount();
@@ -15,25 +16,25 @@ const Connect: NextPage = () => {
   const { requestChallengeAsync } = useAuthRequestChallengeEvm();
 
   const handleAuth = async () => {
-    const { message } = await requestChallengeAsync({
-      address: address,
-      chainId: chain.id,
-    });
+    const { message } = (await requestChallengeAsync({
+      address: address as EvmAddressish,
+      chainId: chain?.id as EvmChainish,
+    }))!;
 
     const signature = await signMessageAsync({ message });
 
     // redirect user after success authentication to '/collection' page
-    const { url } = await signIn('moralis-auth', {
+    const { url } = (await signIn('moralis-auth', {
       message,
       signature,
       redirect: false,
       callbackUrl: '/collection',
-    });
+    }))!;
     /**
      * instead of using signIn(..., redirect: '/collection')
      * we get the url from callback and push it to the router to avoid page refreshing
      */
-    push(url);
+    push(url!);
   };
   return (
     <div>

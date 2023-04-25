@@ -6,6 +6,7 @@ import { configureChains, createClient, WagmiConfig } from 'wagmi';
 import { arbitrum, goerli, mainnet, optimism, polygon } from 'wagmi/chains';
 import { publicProvider } from 'wagmi/providers/public';
 import { SessionProvider } from 'next-auth/react';
+import { Session } from 'next-auth';
 
 const { chains, provider, webSocketProvider } = configureChains(
   [
@@ -31,7 +32,7 @@ const wagmiClient = createClient({
   webSocketProvider,
 });
 
-function App({ Component, pageProps }: AppProps) {
+function App({ Component, pageProps }: AppProps & { pageProps: { session: Session } }) {
   return (
     <WagmiConfig client={wagmiClient}>
       <SessionProvider session={pageProps.session} refetchInterval={0}>

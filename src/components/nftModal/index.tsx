@@ -1,7 +1,8 @@
+import { NFTDATA } from '@/types/nftData.type';
 import Image from 'next/image';
 import { useEffect, useRef } from 'react';
 
-export function NftModal({ nftData, viewMetaData }) {
+export function NftModal({ nftData, viewMetaData }: { nftData: NFTDATA, viewMetaData: CallableFunction }) {
     const modal = useRef<HTMLDialogElement>(null);
     useEffect(() => {
         if (modal.current) {
@@ -20,7 +21,7 @@ export function NftModal({ nftData, viewMetaData }) {
                 <Image className='rounded-lg' src={nftData.metadata?.image.replace('ipfs://', 'https://ipfs.io/ipfs/') || '/nft-image-not-found.png'} alt='NFT image' height={496} width={496}></Image>
                 <div className='p-5 flex flex-wrap gap-2'>
                     {nftData.metadata?.attributes ?
-                        nftData.metadata.attributes.map((attribute, index) => (
+                        nftData.metadata.attributes.map((attribute: any, index: any) => (
                             <div className='border border-[#D0D5DD] rounded-lg py-3 text-center basis-1/4 grow shrink' key={index}>
                                 <p className='text-[#101828]'>{attribute.trait_type}</p>
                                 <p className='font-semibold text-[#6941C6]'>{attribute.value ? attribute.value : 'N/A'}</p>

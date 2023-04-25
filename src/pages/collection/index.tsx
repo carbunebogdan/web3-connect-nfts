@@ -6,13 +6,15 @@ import { useEvmWalletNFTs } from '@moralisweb3/next';
 import { NftCard } from '@/components/nftCard';
 import { useState } from 'react';
 import { NftModal } from '@/components/nftModal';
+import { User } from 'next-auth';
+import { NFTDATA } from '@/types/nftData.type';
 
 // gets a prop from getServerSideProps
-const Collection: NextPage = ({ user }) => {
-    const [modal, setModal] = useState(null);
+const Collection: NextPage<{ user: User }> = ({ user }: { user: User }) => {
+    const [modal, setModal] = useState<NFTDATA | null>(null);
     const { data: NFTList } = useEvmWalletNFTs({ address: "0xAf8d40f5d5Ec8054d8dEf099493F1Dc574EA680D" }); // we use the hardcoded address, in a normal scenario we would've use the user object here
 
-    const viewMetaData = (nftData) => {
+    const viewMetaData = (nftData: NFTDATA) => {
         setModal(nftData);
     }
 
@@ -29,13 +31,13 @@ const Collection: NextPage = ({ user }) => {
                     <h1>MegaKongs Collection</h1>
                 </div>
                 <div className='flex flex-wrap items-center justify-center gap-5'>
-                    {NFTList?.map((NFT) => (
-                        <NftCard nftData={NFT} key={NFT.tokenHash} viewMetaData={viewMetaData}></NftCard>
+                    {NFTList?.map((nftData) => (
+                        <NftCard nftData={nftData as NFTDATA} key={nftData.tokenHash} viewMetaData={viewMetaData}></NftCard>
                     ))}
                 </div>
-                <button onClick={() => signOut({ redirect: '/' })}>Sign out</button>
+                <button onClick={() => signOut({ redirect: true })}>Sign out</button>
             </div>
-            {modal && <NftModal nftData={modal} viewMetaData={viewMetaData}/>}
+            {modal && <NftModal nftData={modal} viewMetaData={viewMetaData} />}
         </div>
     );
 }
