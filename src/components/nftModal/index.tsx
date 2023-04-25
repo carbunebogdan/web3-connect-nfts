@@ -5,11 +5,7 @@ export function NftModal({ nftData, viewMetaData }) {
     const modal = useRef<HTMLDialogElement>(null);
     useEffect(() => {
         if (modal.current) {
-            if (nftData) {
-                !modal.current.open && modal.current.showModal();
-            } else {
-                modal.current.close();
-            }
+            !modal.current.open && modal.current.showModal();
         }
     }, [nftData])
     return (
@@ -22,7 +18,7 @@ export function NftModal({ nftData, viewMetaData }) {
                     </button>
                 </div>
                 <div>
-                    <Image className='rounded-lg' src={nftData.metadata?.image.replace('ipfs://', 'https://ipfs.io/ipfs/')} alt='NFT image' height={496} width={496}></Image>
+                    <Image className='rounded-lg' src={nftData.metadata?.image.replace('ipfs://', 'https://ipfs.io/ipfs/') || '/nft-image-not-found.png'} alt='NFT image' height={496} width={496}></Image>
                     <div className='p-5 flex flex-wrap gap-2'>
                         {nftData.metadata?.attributes ?
                             nftData.metadata.attributes.map((attribute, index) => (

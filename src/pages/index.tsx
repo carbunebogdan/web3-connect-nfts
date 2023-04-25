@@ -2,15 +2,14 @@ import type { NextPage } from 'next';
 import Head from 'next/head';
 import Header from '../components/header';
 import { CustomConnectButton } from '../components/connectButton';
-import { signIn, useSession } from 'next-auth/react';
+import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { useAccount, useNetwork, useSignMessage } from 'wagmi';
 import { useAuthRequestChallengeEvm } from '@moralisweb3/next';
 
 const Connect: NextPage = () => {
-  const { isConnected, address } = useAccount();
+  const { address } = useAccount();
   const { chain } = useNetwork();
-  const { status } = useSession();
   const { signMessageAsync } = useSignMessage();
   const { push } = useRouter();
   const { requestChallengeAsync } = useAuthRequestChallengeEvm();
@@ -23,7 +22,7 @@ const Connect: NextPage = () => {
 
     const signature = await signMessageAsync({ message });
 
-    // redirect user after success authentication to '/user' page
+    // redirect user after success authentication to '/collection' page
     const { url } = await signIn('moralis-auth', {
       message,
       signature,
@@ -31,7 +30,7 @@ const Connect: NextPage = () => {
       callbackUrl: '/collection',
     });
     /**
-     * instead of using signIn(..., redirect: '/user')
+     * instead of using signIn(..., redirect: '/collection')
      * we get the url from callback and push it to the router to avoid page refreshing
      */
     push(url);
